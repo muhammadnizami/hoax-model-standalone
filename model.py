@@ -123,11 +123,11 @@ def setup_hoax_buzzers(number, strategy, threshold=0.05):
 	for node in select_buzzers(number, strategy, threshold):
 		become_hoax_buzzer(node)
 
-def go(spread_chance,hoax_believability,forget_chance,vv_chance,iv_chance,bf_chance):
+def go(spread_chance,hoax_believability,forget_chance,vv_chance,iv_chance,bf_chance,rng = random.uniform):
 	for node in [node for node in graph.nodes if is_swing[node]]:
 		update_probabilities(node,spread_chance,hoax_believability,forget_chance,vv_chance,iv_chance,bf_chance)
 	for node in [node for node in graph.nodes if is_swing[node]]:
-		execute_probabilities(node)
+		execute_probabilities(node,rng)
 
 def update_probabilities(node,spread_chance,hoax_believability,forget_chance,vv_chance,iv_chance,bf_chance):
 	become_believer_probability[node] = is_swing[node]*(f(node,spread_chance,hoax_believability)*is_susceptible[node]+(1- j(node, spread_chance, hoax_believability, forget_chance, vv_chance, iv_chance, bf_chance)- h(node, spread_chance, hoax_believability, vv_chance, iv_chance, bf_chance))*is_believer[node]) + is_hoax_buzzer[node] * 1
@@ -168,8 +168,8 @@ def j(node, spread_chance, hoax_believability, forget_chance, vv_chance, iv_chan
 	else:
 		return forget_chance * (1 - spread_chance * (nN * (iv_chance + bf_chance)/(nB * (1 - iv_chance - bf_chance) + nN * (iv_chance + bf_chance))))
 
-def execute_probabilities(node):
-	r = random.uniform()
+def execute_probabilities(node, random_function = random.uniform):
+	r = random_function()
 	if r < become_believer_probability[node]:
 		become_believer(node)
 	elif r - become_believer_probability[node] < become_nonbeliever_probability[node]:
