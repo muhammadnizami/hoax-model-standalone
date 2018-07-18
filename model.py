@@ -67,8 +67,8 @@ def setup_network(network_type, n, k, initial_outbreak):
 	global graph
 
 	if (network_type=='barabasi-albert'):
-		m = k / 2.925
-		graph = networkx.barabasi_albert_graph(n,k)
+		m = k / 1.95
+		graph = networkx.barabasi_albert_graph(n,int(m))
 	else:
 		p = k / n
 		graph = networkx.erdos_renyi_graph(n,p)
